@@ -16,11 +16,11 @@ steps:
     args:
       - '-c'
       - |
-        if ! gcloud artifacts repositories describe vamsi-artifact-cloudrun --location=asia-east1 --project=velvety-dolphin-460703-e4; then
+        if ! gcloud artifacts repositories describe vamsi-artifact-cloudrun --location=asia-south1 --project=velvety-dolphin-460703-e4; then
           echo "Creating Artifact Registry..."
           gcloud artifacts repositories create vamsi-artifact-cloudrun \
             --repository-format=docker \
-            --location=asia-east1 \
+            --location=asia-south1 \
             --project=velvety-dolphin-460703-e4
         else
           echo "Artifact Registry already exists."
@@ -33,7 +33,7 @@ steps:
       [
         'build',
         '-t',
-        'asia-east1-docker.pkg.dev/velvety-dolphin-460703-e4/vamsi-artifact-cloudrun/vamsi-image:latest',
+        'asia-south1-docker.pkg.dev/velvety-dolphin-460703-e4/vamsi-artifact-cloudrun/vamsi-image:latest',
         '.'
       ]
 
@@ -42,7 +42,7 @@ steps:
     args:
       [
         'push',
-        'asia-east1-docker.pkg.dev/velvety-dolphin-460703-e4/vamsi-artifact-cloudrun/vamsi-image:latest'
+        'asia-south1-docker.pkg.dev/velvety-dolphin-460703-e4/vamsi-artifact-cloudrun/vamsi-image:latest'
       ]
 
   # Step 5: Deploy to Cloud Run
@@ -52,8 +52,8 @@ steps:
       - '-c'
       - |
         SERVICE_NAME="vamsi-cloudrun-service"
-        REGION="asia-east1"
-        IMAGE_URI="asia-east1-docker.pkg.dev/velvety-dolphin-460703-e4/vamsi-artifact-cloudrun/vamsi-image:latest"
+        REGION="asia-south1"
+        IMAGE_URI="asia-south1-docker.pkg.dev/velvety-dolphin-460703-e4/vamsi-artifact-cloudrun/vamsi-image:latest"
 
         if gcloud run services describe "$$SERVICE_NAME" --region="$$REGION" --project=velvety-dolphin-460703-e4 > /dev/null 2>&1; then
           echo "Updating existing Cloud Run service..."
