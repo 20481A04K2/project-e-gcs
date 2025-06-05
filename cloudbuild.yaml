@@ -1,12 +1,14 @@
 steps:
   # Step 1: Clone GitHub repo and zip it
-  - name: 'gcr.io/cloud-builders/git'
+  - name: 'ubuntu'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
+        apt-get update && apt-get install -y git zip && \
         git clone https://github.com/20481A04K2/project-e-gcs && \
         zip -r project-e-gcs.zip project-e-gcs
+
 
   # Step 2: Ensure Artifact Registry exists
   - name: 'gcr.io/cloud-builders/gcloud'
