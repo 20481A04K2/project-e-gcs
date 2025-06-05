@@ -5,7 +5,7 @@ steps:
     args:
       - '-c'
       - |
-        git clone https://github.com/20481A04K2/project-e-gcs
+        git clone https://github.com/20481A04K2/project-e-gcs && \
         zip -r project-e-gcs.zip project-e-gcs
 
   # Step 2: Ensure Artifact Registry exists
