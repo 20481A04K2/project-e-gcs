@@ -9,19 +9,18 @@ steps:
         git clone https://github.com/20481A04K2/project-e-gcs && \
         zip -r project-e-gcs.zip project-e-gcs
 
-
   # Step 2: Ensure Artifact Registry exists
   - name: 'gcr.io/cloud-builders/gcloud'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        if ! gcloud artifacts repositories describe vamsi-artifact-cloudrun --location=asia-south1 --project=velvety-dolphin-460703-e4; then
+        if ! gcloud artifacts repositories describe vamsi-artifact-cloudrun --location=asia-south1 --project=articulate-case-462010-b7; then
           echo "Creating Artifact Registry..."
           gcloud artifacts repositories create vamsi-artifact-cloudrun \
             --repository-format=docker \
             --location=asia-south1 \
-            --project=velvety-dolphin-460703-e4
+            --project=articulate-case-462010-b7
         else
           echo "Artifact Registry already exists."
         fi
@@ -33,7 +32,7 @@ steps:
       [
         'build',
         '-t',
-        'asia-south1-docker.pkg.dev/velvety-dolphin-460703-e4/vamsi-artifact-cloudrun/vamsi-image:latest',
+        'asia-south1-docker.pkg.dev/articulate-case-462010-b7/vamsi-artifact-cloudrun/vamsi-image:latest',
         '.'
       ]
 
@@ -42,7 +41,7 @@ steps:
     args:
       [
         'push',
-        'asia-south1-docker.pkg.dev/velvety-dolphin-460703-e4/vamsi-artifact-cloudrun/vamsi-image:latest'
+        'asia-south1-docker.pkg.dev/articulate-case-462010-b7/vamsi-artifact-cloudrun/vamsi-image:latest'
       ]
 
   # Step 5: Deploy to Cloud Run
@@ -53,9 +52,9 @@ steps:
       - |
         SERVICE_NAME="vamsi-cloudrun-service"
         REGION="asia-south1"
-        IMAGE_URI="asia-south1-docker.pkg.dev/velvety-dolphin-460703-e4/vamsi-artifact-cloudrun/vamsi-image:latest"
+        IMAGE_URI="asia-south1-docker.pkg.dev/articulate-case-462010-b7/vamsi-artifact-cloudrun/vamsi-image:latest"
 
-        if gcloud run services describe "$$SERVICE_NAME" --region="$$REGION" --project=velvety-dolphin-460703-e4 > /dev/null 2>&1; then
+        if gcloud run services describe "$$SERVICE_NAME" --region="$$REGION" --project=articulate-case-462010-b7 > /dev/null 2>&1; then
           echo "Updating existing Cloud Run service..."
         else
           echo "Creating new Cloud Run service..."
@@ -66,7 +65,7 @@ steps:
           --platform=managed \
           --region="$$REGION" \
           --allow-unauthenticated \
-          --project=velvety-dolphin-460703-e4
+          --project=articulate-case-462010-b7
 
 options:
   logging: CLOUD_LOGGING_ONLY
