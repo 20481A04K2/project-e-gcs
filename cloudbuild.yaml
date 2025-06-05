@@ -43,7 +43,7 @@ steps:
         'asia-east1-docker.pkg.dev/velvety-dolphin-460703-e4/vamsi-artifact-cloudrun/vamsi-image:latest'
       ]
 
-  # Step 5: Deploy to Cloud Run (Create or update)
+  # Step 5: Deploy to Cloud Run
   - name: 'gcr.io/cloud-builders/gcloud'
     entrypoint: 'bash'
     args:
@@ -53,16 +53,16 @@ steps:
         REGION="asia-east1"
         IMAGE_URI="asia-east1-docker.pkg.dev/velvety-dolphin-460703-e4/vamsi-artifact-cloudrun/vamsi-image:latest"
 
-        if gcloud run services describe "$SERVICE_NAME" --region="$REGION" --project=velvety-dolphin-460703-e4 > /dev/null 2>&1; then
+        if gcloud run services describe "$$SERVICE_NAME" --region="$$REGION" --project=velvety-dolphin-460703-e4 > /dev/null 2>&1; then
           echo "Updating existing Cloud Run service..."
         else
           echo "Creating new Cloud Run service..."
         fi
 
-        gcloud run deploy "$SERVICE_NAME" \
-          --image="$IMAGE_URI" \
+        gcloud run deploy "$$SERVICE_NAME" \
+          --image="$$IMAGE_URI" \
           --platform=managed \
-          --region="$REGION" \
+          --region="$$REGION" \
           --allow-unauthenticated \
           --project=velvety-dolphin-460703-e4
 
