@@ -1,4 +1,4 @@
-from flask import Flask, send_file, request, jsonify
+from flask import Flask, send_file, request, jsonify,render_template_string
 import requests
 import boto3
 import json
@@ -22,9 +22,6 @@ def get_data():
 def delete():
     return send_file('delete.html')
 
-@app.route('/submitteddata')
-def submitted():
-    return send_file('submitteddata.html')
 
 @app.route('/data')
 def data():
@@ -43,13 +40,19 @@ def proxy_submit():
 @app.route("/submitteddata")
 def submitted_data():
     try:
-        # Get all data from backend
         response = requests.get(f"{BACKEND_URL}/submitteddata")
         response.raise_for_status()
         users = response.json()
     except Exception as e:
         users = []
-    return render_template("submitteddata.html", users=users)
+
+    # Read HTML from file manually
+    with open("submitteddata.html", "r") as f:
+        html_content = f.read()
+
+    # Inject variables
+    return render_template_string(html_content, users=users)
+
 
 # ✅ Proxy /get-data/<id> to backend (optional)
 @app.route('/get-data/<int:user_id>', methods=['GET'])
