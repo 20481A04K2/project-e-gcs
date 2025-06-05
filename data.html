@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Fetched Data</title>
+  <style>
+    /* Your existing CSS styles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f7f7f7;
+      text-align: center;
+    }
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+    table {
+      border-collapse: collapse;
+      width: 80%;
+      margin: 20px auto;
+    }
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    a {
+      display: inline-block;
+      margin-top: 20px;
+      text-decoration: none;
+      color: #007bff;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .navbar {
+      background-color: rgb(25, 25, 105);
+      color: white;
+      overflow: hidden;
+      text-align: center;
+      padding: 10px 0;
+      margin-bottom: 20px;
+    }
+    .navbar a {
+      color: white;
+      padding: 14px 16px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .navbar a:hover {
+      background-color: #ddd;
+      color: black;
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <a href="#home">Customer User Management</a>
+    <a href="/" class="fetch-data-btn">Add Data</a>
+  </div>
+
+  <h1>Fetched Data</h1>
+
+  <div id="message" style="color: red; margin-top: 20px;"></div>
+
+  <table id="user-table" style="display:none;">
+    <thead>
+      <tr>
+        <th>ID</th><th>Name</th><th>Email</th><th>Password</th><th>Phone Number</th><th>Address</th><th>Comments</th>
+      </tr>
+    </thead>
+    <tbody id="user-data-body"></tbody>
+  </table>
+
+  <a href="/">Back to Home</a>
+
+  <script>
+    // Update with your backend API base URL
+    const API_BASE = "internal-instance-ll-rr-1942256296.ap-south-1.elb.amazonaws.com";
+
+    // Get user id from URL query param, default to 1
+    const userId = new URLSearchParams(window.location.search).get("id") || 1;
+
+    const messageDiv = document.getElementById("message");
+    const userTable = document.getElementById("user-table");
+    const tbody = document.getElementById("user-data-body");
+
+    fetch(`${API_BASE}/get_user/${userId}`)
+      .then(response => response.json())
+      .then(data => {
+        if (!data || data.error || !data.id) {
+          messageDiv.textContent = "No data found for the provided ID.";
+          userTable.style.display = "none";
+          return;
+        }
+        // Clear message, show table
+        messageDiv.textContent = "";
+        userTable.style.display = "table";
+
+        // Clear any previous rows
+        tbody.innerHTML = "";
+
+        // Build row with user data
+        const tr = document.createElement("tr");
+
+        // Fields to display in order
+        const fields = ['id', 'name', 'email', 'password', 'phone', 'address', 'comments'];
+
+        fields.forEach(field => {
+          const td = document.createElement("td");
+          td.textContent = data[field] || "";
+          tr.appendChild(td);
+        });
+
+        tbody.appendChild(tr);
+      })
+      .catch(err => {
+        messageDiv.textContent = "Error loading data.";
+        userTable.style.display = "none";
+        console.error("Fetch error:", err);
+      });
+  </script>
+</body>
+</html>

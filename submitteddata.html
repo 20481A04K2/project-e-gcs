@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Submitted Data</title>
+    <style>
+        /* Add your custom CSS styles here */
+        body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background: #f0f4f8;
+    color: #333;
+}
+
+h2 {
+    text-align: center;
+    color: #222;
+    margin-bottom: 30px;
+    font-weight: 600;
+    font-size: 2rem;
+}
+
+table {
+    width: 80%;
+    margin: 0 auto 40px auto;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgb(0 0 0 / 0.1);
+    background: #fff;
+    overflow: hidden;
+}
+
+thead tr {
+    background-color: #2a3f5f;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+}
+
+th, td {
+    padding: 14px 20px;
+    text-align: left;
+    border-bottom: 1px solid #e1e8f0;
+    font-size: 1rem;
+}
+
+tbody tr:hover {
+    background-color: #e8f0fe;
+    cursor: pointer;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+@media (max-width: 768px) {
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+
+    thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    tbody tr {
+        margin-bottom: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgb(0 0 0 / 0.05);
+        background: #fff;
+        padding: 15px;
+    }
+
+    tbody td {
+        border: none;
+        position: relative;
+        padding-left: 50%;
+        font-size: 0.95rem;
+        white-space: normal;
+    }
+
+    tbody td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 20px;
+        top: 14px;
+        font-weight: 600;
+        color: #555;
+        white-space: nowrap;
+        text-transform: capitalize;
+    }
+}
+
+    </style>
+</head>
+<body>
+    <h2>Stored User Data</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th><th>Name</th><th>Email</th><th>Password</th><th>Phone</th><th>Address</th><th>Comments</th>
+            </tr>
+        </thead>
+        <tbody>
+    {% for user in users %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.password }}</td>
+            <td>{{ user.phone }}</td>
+            <td>{{ user.address }}</td>
+            <td>{{ user.comments }}</td>
+        </tr>
+    {% endfor %}
+</tbody>
+
+    </table>
+</body>
+</html>
