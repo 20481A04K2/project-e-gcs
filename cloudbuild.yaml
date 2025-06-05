@@ -1,0 +1,70 @@
+steps:
+  # Step 1: Clone GitHub repo and zip it
+  - name: 'gcr.io/cloud-builders/git'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        git clone https://github.com/20481A04K2/project-e-gcs
+        zip -r project-e-gcs.zip project-e-gcs
+
+  # Step 2: Ensure Artifact Registry exists
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        if ! gcloud artifacts repositories describe vamsi-artifact-cloudrun --location=asia-east1 --project=velvety-dolphin-460703-e4; then
+          echo "Creating Artifact Registry..."
+          gcloud artifacts repositories create vamsi-artifact-cloudrun \
+            --repository-format=docker \
+            --location=asia-east1 \
+            --project=velvety-dolphin-460703-e4
+        else
+          echo "Artifact Registry already exists."
+        fi
+
+  # Step 3: Build Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    dir: 'project-e-gcs'
+    args:
+      [
+        'build',
+        '-t',
+        'asia-east1-docker.pkg.dev/velvety-dolphin-460703-e4/vamsi-artifact-cloudrun/vamsi-image:latest',
+        '.'
+      ]
+
+  # Step 4: Push Docker image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'push',
+        'asia-east1-docker.pkg.dev/velvety-dolphin-460703-e4/vamsi-artifact-cloudrun/vamsi-image:latest'
+      ]
+
+  # Step 5: Deploy to Cloud Run (Create or update)
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        SERVICE_NAME="vamsi-cloudrun-service"
+        REGION="asia-east1"
+        IMAGE_URI="asia-east1-docker.pkg.dev/velvety-dolphin-460703-e4/vamsi-artifact-cloudrun/vamsi-image:latest"
+
+        if gcloud run services describe "$SERVICE_NAME" --region="$REGION" --project=velvety-dolphin-460703-e4 > /dev/null 2>&1; then
+          echo "Updating existing Cloud Run service..."
+        else
+          echo "Creating new Cloud Run service..."
+        fi
+
+        gcloud run deploy "$SERVICE_NAME" \
+          --image="$IMAGE_URI" \
+          --platform=managed \
+          --region="$REGION" \
+          --allow-unauthenticated \
+          --project=velvety-dolphin-460703-e4
+
+options:
+  logging: CLOUD_LOGGING_ONLY
