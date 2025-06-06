@@ -6,7 +6,7 @@ from flask import redirect
 app = Flask(__name__)
 
 # ✅ Backend internal load balancer URL
-BACKEND_URL = "http://172.16.0.4:8080"
+BACKEND_URL = "http://172.16.0.8:8080"
 
 
 
